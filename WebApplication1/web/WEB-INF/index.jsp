@@ -23,26 +23,30 @@
                 <h1>Product search</h1>
                 
                 <div id="description">
-                    Provide a brand and product to search Shoppers Drug Mart for.<br/>If it's found, the product's information will be displayed.
+                    Provide a brand and product to search Sephora for.<br/>If it's found, the product's information will be displayed.
                 </div>
                 
-                <form>
+                <form class="form" method="post" action="index">
                     <div class="form-group row">
                         <label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="inputBrand" placeholder="Brand">
+                            <input name="inputBrand" type="text" class="form-control" id="inputBrand" placeholder="Brand" value="${inputBrand}" />
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="inputProduct" class="col-sm-2 col-form-label">Product name</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="inputProduct" placeholder="Product name">
+                            <input name="inputProduct" type="text" class="form-control" id="inputProduct" placeholder="Product name" value="${inputProduct}" />
                         </div>
                     </div>
                     <div class="form-group row center-button">
-                        <button class="btn btn-primary" type="submit">Search</button>
+                        <input class="btn btn-primary" type="submit" value="Search">
                     </div>
                 </form>
+                
+                <div id="result">
+                    ${result}
+                </div>
             </div>
         </div>
         

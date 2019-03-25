@@ -19,6 +19,7 @@ h1 {
 
 #content {
     min-width: 800px;
+    max-width: 800px;
 }
 
 .center-button {
@@ -26,4 +27,8 @@ h1 {
     display: flex;
     flex-direction: row;
     justify-content: center;
+}
+
+#result {
+    padding-top: 2rem;
 }
