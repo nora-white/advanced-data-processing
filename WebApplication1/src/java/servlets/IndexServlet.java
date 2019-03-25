@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import businesslogic.Crawler;
+
 @WebServlet(name = "IndexServlet", urlPatterns = {"/IndexServlet"})
 public class IndexServlet extends HttpServlet {
 
@@ -30,40 +32,16 @@ public class IndexServlet extends HttpServlet {
         
         String inputBrand = request.getParameter("inputBrand");
         String inputProduct = request.getParameter("inputProduct");
-        
-        URL url;
-        InputStream is = null;
-        BufferedReader br;
-        String line;
-        String[] splitLine;
-        
-        ArrayList<String> disallowedPages = new ArrayList<String>(); 
-        
-        try {
-            url = new URL("https://www.sephora.com/robots.txt");
-            is = url.openStream();
-            br = new BufferedReader(new InputStreamReader(is));
             
-            while ((line = br.readLine()) != null) {
-                if (line.contains("Disallow")) {
-                    splitLine = line.split(": ");
-                    disallowedPages.add(splitLine[1]);
-                }
-            }
-            request.setAttribute("inputBrand", inputBrand);
-            request.setAttribute("inputProduct", inputProduct);
-            request.setAttribute("result", "<b>Disallowed pages: </b>" + disallowedPages.toString());
-            getServletContext().getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);  
-        } catch (MalformedURLException mue) {
-         mue.printStackTrace();
-        } catch (IOException ioe) {
-             ioe.printStackTrace();
-        } finally {
-            try {
-                if (is != null) is.close();
-            } catch (IOException ioe) {
-                // nothing to see here
-            }
-        }
+        Crawler crawler = new Crawler(inputBrand, inputProduct);
+
+        request.setAttribute("siteMapSites", "<b>Sitemap Sites: </b>" + crawler.searchForProductPage());
+        request.setAttribute("inputBrand", inputBrand);
+        request.setAttribute("inputProduct", inputProduct);
+        request.setAttribute("result", "<b>Disallowed pages: </b>" + crawler.getDisallowedPages());
+        request.setAttribute("sitemapURL", "<b>Sitemap URL: </b>" + crawler.getSitemapURL());
+        request.setAttribute("crawlDelay", "<b>Crawl-delay: </b>" + crawler.getCrawlDelay());
+        getServletContext().getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);  
+
     }
 }

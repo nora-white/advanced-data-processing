@@ -45,7 +45,10 @@
                 </form>
                 
                 <div id="result">
-                    ${result}
+                    ${siteMapSites}<br/>
+                    ${result}<br/>
+                    ${crawlDelay}<br/>
+                    ${sitemapURL}
                 </div>
             </div>
         </div>
