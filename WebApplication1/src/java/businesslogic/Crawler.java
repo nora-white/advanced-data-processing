@@ -1,6 +1,5 @@
 package businesslogic;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
@@ -73,15 +73,24 @@ public class Crawler {
     }
     
     public String searchForProductPage() {
-        try {
+        String returnURLs = "";
+        try { // Get URLs from sitemap using XPath
             InputStream in = new URL(sitemapURL).openStream();
             TimeUnit.SECONDS.sleep(crawlDelay);
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = (Document) documentBuilder.parse(in);
             XPath xPath = XPathFactory.newInstance().newXPath();
-            NodeList nodeList = (NodeList)xPath.compile("//loc").evaluate(document, XPathConstants.NODESET);
-            return "Number of URLS: " + nodeList.getLength();
+            NodeList nodeList = (NodeList)xPath.compile("//sitemap").evaluate(document, XPathConstants.NODESET);
+            XPathExpression xPathExp = xPath.compile("./loc");
+            
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                if(!xPathExp.evaluate(nodeList.item(i)).contains("_fr-") && xPathExp.evaluate(nodeList.item(i)).contains("_en-") && !xPathExp.evaluate(nodeList.item(i)).contains("-store-")) {
+                    returnURLs += (xPathExp.evaluate(nodeList.item(i)) + "<br/>");
+                }
+            }
+            return returnURLs;
+            
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } catch (SAXException ex) {
@@ -95,6 +104,10 @@ public class Crawler {
         }
         return "No urls grabbed";
     }
+    
+//    private String searchForProductPage(String sitemapXML) {
+//        
+//    }
 
     public String getDisallowedPages() {
         return disallowedPages.toString();

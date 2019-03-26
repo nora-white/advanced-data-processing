@@ -35,7 +35,7 @@ public class IndexServlet extends HttpServlet {
             
         Crawler crawler = new Crawler(inputBrand, inputProduct);
 
-        request.setAttribute("siteMapSites", "<b>Sitemap Sites: </b>" + crawler.searchForProductPage());
+        request.setAttribute("siteMapSites", "<b>Sitemap site: </b>" + crawler.searchForProductPage());
         request.setAttribute("inputBrand", inputBrand);
         request.setAttribute("inputProduct", inputProduct);
         request.setAttribute("result", "<b>Disallowed pages: </b>" + crawler.getDisallowedPages());
