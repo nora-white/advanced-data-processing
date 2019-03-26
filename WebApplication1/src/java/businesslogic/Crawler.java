@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 
 public class Crawler {
     
-    private String sitemapURL = "";
+    private String baseSitemapURL = "";
     private final String inputBrand;
     private final String inputProduct;
     private int crawlDelay = 0;
@@ -34,10 +34,11 @@ public class Crawler {
     private BufferedReader br;
     private String line;
     private String[] splitLine;
+    private ArrayList<String> allProducts = new ArrayList<>();
     
     public Crawler(String inputBrand, String inputProduct) {
         this.inputBrand = inputBrand;
-        this.inputProduct = inputBrand;
+        this.inputProduct = inputProduct;
         initializeCrawler();
     }
     
@@ -56,7 +57,7 @@ public class Crawler {
                     crawlDelay = Integer.parseInt(splitLine[1]);
                 } else if (line.contains("Sitemap")) {
                     splitLine = line.split(": ");
-                    sitemapURL = splitLine[1];
+                    baseSitemapURL = splitLine[1];
                 }
             }
         } catch (MalformedURLException mue) {
@@ -73,10 +74,12 @@ public class Crawler {
     }
     
     public String searchForProductPage() {
-        String returnURLs = "";
+        ArrayList<String> sitemapURLs = new ArrayList<>();
+        
         try { // Get URLs from sitemap using XPath
-            InputStream in = new URL(sitemapURL).openStream();
             TimeUnit.SECONDS.sleep(crawlDelay);
+            InputStream in = new URL(baseSitemapURL).openStream();
+            
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = (Document) documentBuilder.parse(in);
@@ -85,11 +88,31 @@ public class Crawler {
             XPathExpression xPathExp = xPath.compile("./loc");
             
             for (int i = 0; i < nodeList.getLength(); i++) {
-                if(!xPathExp.evaluate(nodeList.item(i)).contains("_fr-") && xPathExp.evaluate(nodeList.item(i)).contains("_en-") && !xPathExp.evaluate(nodeList.item(i)).contains("-store-")) {
-                    returnURLs += (xPathExp.evaluate(nodeList.item(i)) + "<br/>");
+                if(xPathExp.evaluate(nodeList.item(i)).contains("product") && xPathExp.evaluate(nodeList.item(i)).contains("_en-")) {
+                    sitemapURLs.add(xPathExp.evaluate(nodeList.item(i)));
                 }
             }
-            return returnURLs;
+            
+            for(int i = 0; i < sitemapURLs.size(); i++) {
+                TimeUnit.SECONDS.sleep(crawlDelay);
+                in = new URL(sitemapURLs.get(i)).openStream();
+                documentBuilderFactory = DocumentBuilderFactory.newInstance();
+                documentBuilder = documentBuilderFactory.newDocumentBuilder();
+                document = (Document) documentBuilder.parse(in);
+                xPath = XPathFactory.newInstance().newXPath();
+                nodeList = (NodeList)xPath.compile("//url").evaluate(document, XPathConstants.NODESET);
+                xPathExp = xPath.compile("./loc");
+                
+                for(int j = 0; j < nodeList.getLength(); j++) {
+                    if(xPathExp.evaluate(nodeList.item(j)).contains(inputProduct)) {
+                        splitLine = xPathExp.evaluate(nodeList.item(j)).split("https://www.sephora.com/ca/en/product/");
+                        splitLine = splitLine[1].split("-P");
+                        allProducts.add(splitLine[0]);
+                    }
+                }
+            }
+            
+            return xPathExp.toString();
             
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -105,16 +128,16 @@ public class Crawler {
         return "No urls grabbed";
     }
     
-//    private String searchForProductPage(String sitemapXML) {
-//        
-//    }
+    public String getAllProducts() {
+        return allProducts.toString();
+    }
 
     public String getDisallowedPages() {
         return disallowedPages.toString();
     }
     
     public String getSitemapURL() {
-        return sitemapURL;
+        return baseSitemapURL;
     }
     
     public int getCrawlDelay() {

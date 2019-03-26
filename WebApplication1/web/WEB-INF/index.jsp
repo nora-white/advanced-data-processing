@@ -48,7 +48,8 @@
                     ${siteMapSites}<br/>
                     ${result}<br/>
                     ${crawlDelay}<br/>
-                    ${sitemapURL}
+                    ${sitemapURL}<br/>
+                    ${allProducts}
                 </div>
             </div>
         </div>

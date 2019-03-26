@@ -34,13 +34,15 @@ public class IndexServlet extends HttpServlet {
         String inputProduct = request.getParameter("inputProduct");
             
         Crawler crawler = new Crawler(inputBrand, inputProduct);
-
-        request.setAttribute("siteMapSites", "<b>Sitemap site: </b>" + crawler.searchForProductPage());
+        
         request.setAttribute("inputBrand", inputBrand);
         request.setAttribute("inputProduct", inputProduct);
+
+        request.setAttribute("siteMapSites", "<b>Sitemap site: </b>" + crawler.searchForProductPage());
         request.setAttribute("result", "<b>Disallowed pages: </b>" + crawler.getDisallowedPages());
         request.setAttribute("sitemapURL", "<b>Sitemap URL: </b>" + crawler.getSitemapURL());
         request.setAttribute("crawlDelay", "<b>Crawl-delay: </b>" + crawler.getCrawlDelay());
+        request.setAttribute("allProducts", "<b>All products: </b>" + crawler.getAllProducts());
         getServletContext().getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);  
 
     }
