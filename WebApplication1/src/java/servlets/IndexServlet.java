@@ -1,19 +1,14 @@
 package servlets;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import businesslogic.Crawler;
+import businesslogic.StAXCrawler;
+import businesslogic.DOMCrawler;
 
 @WebServlet(name = "IndexServlet", urlPatterns = {"/IndexServlet"})
 public class IndexServlet extends HttpServlet {
@@ -33,16 +28,22 @@ public class IndexServlet extends HttpServlet {
         String inputBrand = request.getParameter("inputBrand");
         String inputProduct = request.getParameter("inputProduct");
             
-        Crawler crawler = new Crawler(inputBrand, inputProduct);
+        StAXCrawler staxCrawler = new StAXCrawler(inputBrand, inputProduct);
+        staxCrawler.search();
+        
+        DOMCrawler domCrawler = new DOMCrawler(inputBrand, inputProduct);
+        domCrawler.search();
         
         request.setAttribute("inputBrand", inputBrand);
         request.setAttribute("inputProduct", inputProduct);
 
-        request.setAttribute("siteMapSites", "<b>Sitemap site: </b>" + crawler.searchForProductPage());
-        request.setAttribute("result", "<b>Disallowed pages: </b>" + crawler.getDisallowedPages());
-        request.setAttribute("sitemapURL", "<b>Sitemap URL: </b>" + crawler.getSitemapURL());
-        request.setAttribute("crawlDelay", "<b>Crawl-delay: </b>" + crawler.getCrawlDelay());
-        request.setAttribute("allProducts", "<b>All products: </b>" + crawler.getAllProducts());
+        request.setAttribute("result", "<b>Disallowed pages: </b>" + staxCrawler.getDisallowedPages());
+        request.setAttribute("sitemapURL", "<b>Sitemap URL: </b>" + staxCrawler.getSitemapURL());
+        request.setAttribute("crawlDelay", "<b>Crawl-delay: </b>" + staxCrawler.getCrawlDelay());
+        request.setAttribute("domTime", "<b>DOM search duration: </b>" + domCrawler.getDuration() + " seconds");
+        request.setAttribute("staxTime", "<b>StAX search duration: </b>" + staxCrawler.getDuration() + " seconds");
+        request.setAttribute("domFoundProducts", "<b>DOM found products: (" + domCrawler.getNumberFoundProducts() + "): </b>" + domCrawler.getFoundProducts());
+        request.setAttribute("staxFoundProducts", "<b>StAX found products: (" + staxCrawler.getNumberFoundProducts() + "): </b>" + staxCrawler.getFoundProducts());
         getServletContext().getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);  
 
     }

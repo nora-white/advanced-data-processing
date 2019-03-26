@@ -45,11 +45,13 @@
                 </form>
                 
                 <div id="result">
-                    ${siteMapSites}<br/>
                     ${result}<br/>
                     ${crawlDelay}<br/>
                     ${sitemapURL}<br/>
-                    ${allProducts}
+                    ${domTime}<br/>
+                    ${staxTime}<br/><br/>
+                    ${domFoundProducts}<br/>
+                    ${staxFoundProducts}
                 </div>
             </div>
         </div>
