@@ -115,19 +115,20 @@ public class DOMCrawler {
         // Start timer
         searchStartTime = System.currentTimeMillis();
         
-        String[] splitLine;        
+        String[] splitLine;   
+        
+        InputStream in;
+        DocumentBuilderFactory documentBuilderFactory;
+        DocumentBuilder documentBuilder;
+        Document document;
+        XPath xPath;
+        NodeList nodeList;
+        XPathExpression xPathExp;
         
         try {
-            InputStream in;
-            DocumentBuilderFactory documentBuilderFactory;
-            DocumentBuilder documentBuilder;
-            Document document;
-            XPath xPath;
-            NodeList nodeList;
-            XPathExpression xPathExp;
-            
             for(int i = 0; i < sitemapURLs.size(); i++) {
                 waitCrawlDelay();
+                
                 in = new URL(sitemapURLs.get(i)).openStream();
                 documentBuilderFactory = DocumentBuilderFactory.newInstance();
                 documentBuilder = documentBuilderFactory.newDocumentBuilder();

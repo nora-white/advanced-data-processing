@@ -45,10 +45,10 @@ public class StAXScraper {
                         
                         break;
                     case XMLStreamConstants.CHARACTERS:
-                        tagContent = reader.getText().trim();
+                        results += " " + reader.getText().trim();
                         break;
                     case XMLStreamConstants.END_ELEMENT:
-                        results += " " + tagContent;
+//                        results += " " + tagContent;
                         break;
                 }
             }
@@ -65,6 +65,7 @@ public class StAXScraper {
         } catch (InterruptedException ex) {
             Logger.getLogger(StAXCrawler.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
     public String getResults() {
