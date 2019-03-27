@@ -6,14 +6,14 @@ public class Product {
     
     // Attributes
     private String brand,name, sizeoz, sizeg, imgurl, producturl;
-    private String[] colour;
+//    private String[] colour;
     private float price;
     private LocalDateTime timestamp;
 
     // Default constructor
     public Product() {}
     
-    public Product(LocalDateTime timestamp, String brand, String name, String sizeoz, String sizeg, float price, String[] colour, String imgurl, String producturl) {
+    public Product(LocalDateTime timestamp, String brand, String name, String sizeoz, String sizeg, float price, String imgurl, String producturl) {
         this.timestamp = timestamp;
         this.brand = brand;
         this.name = name;
@@ -22,7 +22,7 @@ public class Product {
         this.imgurl = imgurl;
         this.producturl = producturl;
         this.price = price;
-        this.colour = colour;
+//        this.colour = colour;
     }
     
     public LocalDateTime getTimestamp() {
@@ -53,11 +53,18 @@ public class Product {
         return producturl;
     }
 
-    public String[] getColour() {
-        return colour;
-    }
+//    public String[] getColour() {
+//        return colour;
+//    }
 
     public float getPrice() {
         return price;
+    }
+    
+    public String toString() {
+        return "[ timestamp: " + timestamp + ", brand: " + brand + ", name: " 
+                + name + ", sizeoz: " + sizeoz + ", sizeg: " + sizeg 
+                + ", imgurl: " + imgurl + ", price: " + price + ", producturl: "
+                + producturl + "]";
     }
 }

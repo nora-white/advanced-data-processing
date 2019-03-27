@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//import businesslogic.StAXCrawler;
+import businesslogic.StAXCrawler;
 import businesslogic.JSONBuilder;
-//import businesslogic.DOMCrawler;
+import domain.Product;
+import java.util.ArrayList;
+import businesslogic.DOMCrawler;
 
 @WebServlet(name = "IndexServlet", urlPatterns = {"/IndexServlet"})
 public class IndexServlet extends HttpServlet {
@@ -30,26 +32,28 @@ public class IndexServlet extends HttpServlet {
         String inputProduct = request.getParameter("inputProduct");
         
         JSONBuilder jsonBuilder = new JSONBuilder();
+        jsonBuilder.getJsonFromFile();
+        ArrayList<Product> jsonProducts = jsonBuilder.getJsonProductList();
             
-//        StAXCrawler staxCrawler = new StAXCrawler(inputBrand, inputProduct);
-//        staxCrawler.search();
-        
-        
-        
+        StAXCrawler staxCrawler = new StAXCrawler(inputBrand, inputProduct);
+        staxCrawler.search();
+
 //        DOMCrawler domCrawler = new DOMCrawler(inputBrand, inputProduct);
 //        domCrawler.search();
         
         request.setAttribute("inputBrand", inputBrand);
         request.setAttribute("inputProduct", inputProduct);
+        request.setAttribute("products", jsonProducts);
 
-//        request.setAttribute("result", "<b>Disallowed pages: </b>" + staxCrawler.getDisallowedPages());
-//        request.setAttribute("sitemapURL", "<b>Sitemap URL: </b>" + staxCrawler.getSitemapURL());
-//        request.setAttribute("crawlDelay", "<b>Crawl-delay: </b>" + staxCrawler.getCrawlDelay());
-        request.setAttribute("domFoundProducts", "Is JSON null? " + jsonBuilder.isJsonNull());
+        request.setAttribute("result", staxCrawler.getDisallowedPages());
+        request.setAttribute("sitemapURL", staxCrawler.getSitemapURL());
+        request.setAttribute("crawlDelay", staxCrawler.getCrawlDelay());
+        request.setAttribute("staxTotalResults", staxCrawler.getNumberFoundProducts());
+        request.setAttribute("staxTime", staxCrawler.getDuration());
 //        request.setAttribute("domTime", "<b>DOM search duration: </b>" + domCrawler.getDuration() + " seconds");
-//        request.setAttribute("staxTime", "<b>StAX search duration: </b>" + staxCrawler.getDuration() + " seconds");
+        
 //        request.setAttribute("domFoundProducts", "<b>DOM found products: (" + domCrawler.getNumberFoundProducts() + "): </b>" + domCrawler.getFoundProducts());
-//        request.setAttribute("staxFoundProducts", "<b>StAX found products: (" + staxCrawler.getNumberFoundProducts() + "): </b>" + staxCrawler.getFoundProducts());
+
         getServletContext().getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);  
 
     }

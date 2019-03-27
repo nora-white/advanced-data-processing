@@ -163,7 +163,7 @@ public class StAXCrawler {
     }
     
     public String getDuration() {
-        return Long.toString(TimeUnit.MILLISECONDS.toSeconds(searchDuration));
+        return Long.toString(TimeUnit.MILLISECONDS.toSeconds(searchDuration)) + " seconds";
     }
     
     public int getNumberFoundProducts() {

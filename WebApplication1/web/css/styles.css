@@ -5,7 +5,6 @@ h1 {
 
 #hero {
     min-height: 100vh;
-    width: 100vw;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -18,8 +17,8 @@ h1 {
 }
 
 #content {
-    min-width: 800px;
-    max-width: 800px;
+    min-width: 1200px;
+    max-width: 1200px;
 }
 
 .center-button {
@@ -31,4 +30,31 @@ h1 {
 
 #result {
     padding-top: 2rem;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.margin-top {
+    margin-top: 2rem;
+}
+
+.product-brand {
+    font-size: 1.2rem;
+}
+
+.product-name {
+    font-size: 1.6rem;
+    font-weight: lighter;
+}
+
+.product-row {
+    border-bottom: 1px solid lightblue;
+    padding-bottom: 2rem;
+}
+
+.product-row:last-child {
+    border-bottom: none;
+    margin-bottom: 5rem;
 }
