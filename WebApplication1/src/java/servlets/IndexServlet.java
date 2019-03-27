@@ -41,6 +41,7 @@ public class IndexServlet extends HttpServlet {
 //        DOMCrawler domCrawler = new DOMCrawler(inputBrand, inputProduct);
 //        domCrawler.search();
         
+        request.setAttribute("searchCompleted", true);
         request.setAttribute("inputBrand", inputBrand);
         request.setAttribute("inputProduct", inputProduct);
         request.setAttribute("products", jsonProducts);

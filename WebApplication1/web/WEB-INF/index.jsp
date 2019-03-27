@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page session="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="cpsc4310" %>
 
 <!DOCTYPE html>
@@ -20,7 +21,14 @@
     <body>
         <div id="hero">
             <div id="content">
-                <h1>Product search</h1>
+                <c:choose>
+                    <c:when test="${searchCompleted}">
+                        <h1 class="big-margin-top">Product search</h1>
+                    </c:when>
+                    <c:otherwise>
+                        <h1>Product search</h1>
+                    </c:otherwise>
+                </c:choose>
                 
                 <div id="description">
                     Provide a brand and product to search Sephora for.<br/>If it's found, the product's information will be displayed.
@@ -44,104 +52,106 @@
                     </div>
                 </form>
                 
-                <div id="result">
-                    
-                    <!-- Crawler data -->
-                    <div class="container">
-                        
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <h2>Crawler results</h2>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-sm-2 title">
-                                Crawl delay
-                            </div>
-                            <div class="col-sm-4">
-                                ${crawlDelay} seconds
-                            </div>
-                            <div class="col-sm-2 title">
-                                Sitemap
-                            </div>
-                            <div class="col-sm-4">
-                                ${sitemapURL}
-                            </div>
-                        </div>
-                            
-                        <div class="row">
-                            <div class="col-sm-2 title">
-                                DOM results
-                            </div>
-                            <div class="col-sm-4">
-                                ${domTime} with ${domTotalResults} product(s) found
-                            </div>
-                            <div class="col-sm-2 title">
-                                StAX results
-                            </div>
-                            <div class="col-sm-4">
-                                ${staxTime} with ${staxTotalResults} product(s) found
-                            </div>
-                        </div>
-                            
-                    </div>
-                            
-                    <!-- Result data -->
-                    <div class="container margin-top">
-                        
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <h2>Found product(s)</h2>
-                            </div>
-                        </div>
-                        
-                        <c:forEach items="${products}" var="product">
-                            
-                            <div class="row margin-top product-row">
-                                
-                                <!-- Image column -->
-                                <div class="col-sm-2">
-                                   <img src="${product.imgurl}" class="img-fluid" />
+                <c:if test="${searchCompleted}">
+                    <div id="result">
+
+                        <!-- Crawler data -->
+                        <div class="container">
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2>Crawler results</h2>
                                 </div>
-                                
-                                <!-- Product data column -->
-                                <div class="col-sm-10">
-                                    
-                                    <div class="row">
-                                        <div class="col-sm-12 product-brand">
-                                            ${product.brand}
-                                        </div>
-                                    </div>
-                                        
-                                    <div class="row">
-                                        <div class="col-sm-12 product-name">
-                                            ${product.name}
-                                        </div>
-                                    </div>
-                                        
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            $${product.price} CAD
-                                        </div>
-                                        <div class="col-sm-2">
-                                            ${product.sizeoz} / ${product.sizeg}
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <a href="${product.producturl}">${product.producturl}</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                        
                             </div>
-                            
-                        </c:forEach>
-                        
+
+                            <div class="row">
+                                <div class="col-sm-2 title">
+                                    Crawl delay
+                                </div>
+                                <div class="col-sm-4">
+                                    ${crawlDelay} seconds
+                                </div>
+                                <div class="col-sm-2 title">
+                                    Sitemap
+                                </div>
+                                <div class="col-sm-4">
+                                    <a href="${sitemapURL}">${sitemapURL}</a>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-2 title">
+                                    DOM results
+                                </div>
+                                <div class="col-sm-4">
+                                    ${domTime} with ${domTotalResults} product(s) found
+                                </div>
+                                <div class="col-sm-2 title">
+                                    StAX results
+                                </div>
+                                <div class="col-sm-4">
+                                    ${staxTime} with ${staxTotalResults} product(s) found
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Result data -->
+                        <div class="container margin-top">
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2>Found product(s)</h2>
+                                </div>
+                            </div>
+
+                            <c:forEach items="${products}" var="product">
+
+                                <div class="row margin-top product-row">
+
+                                    <!-- Image column -->
+                                    <div class="col-sm-2">
+                                       <img src="${product.imgurl}" class="img-fluid" />
+                                    </div>
+
+                                    <!-- Product data column -->
+                                    <div class="col-sm-10">
+
+                                        <div class="row">
+                                            <div class="col-sm-12 product-brand">
+                                                ${product.brand}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12 product-name">
+                                                ${product.name}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-2">
+                                                $<fmt:formatNumber type="number" maxFractionDigits="2" value="${product.price}"/> CAD
+                                            </div>
+                                            <div class="col-sm-2">
+                                                ${product.sizeoz} / ${product.sizeg}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <a href="${product.producturl}">${product.producturl}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </c:forEach>
+
+                        </div>
                     </div>
-                </div>
+                </c:if>
             </div>
         </div>
         
