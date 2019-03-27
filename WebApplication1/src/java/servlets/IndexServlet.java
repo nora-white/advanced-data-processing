@@ -12,6 +12,7 @@ import businesslogic.JSONBuilder;
 import domain.Product;
 import java.util.ArrayList;
 import businesslogic.DOMCrawler;
+import businesslogic.StAXScraper;
 
 @WebServlet(name = "IndexServlet", urlPatterns = {"/IndexServlet"})
 public class IndexServlet extends HttpServlet {
@@ -37,6 +38,8 @@ public class IndexServlet extends HttpServlet {
             
         StAXCrawler staxCrawler = new StAXCrawler(inputBrand, inputProduct);
         staxCrawler.search();
+        
+        StAXScraper staxScraper = new StAXScraper(staxCrawler.getFoundProducts(), staxCrawler.getCrawlDelay());
 
 //        DOMCrawler domCrawler = new DOMCrawler(inputBrand, inputProduct);
 //        domCrawler.search();
@@ -46,7 +49,7 @@ public class IndexServlet extends HttpServlet {
         request.setAttribute("inputProduct", inputProduct);
         request.setAttribute("products", jsonProducts);
 
-        request.setAttribute("result", staxCrawler.getDisallowedPages());
+        request.setAttribute("scraperResults", staxScraper.getResults());
         request.setAttribute("sitemapURL", staxCrawler.getSitemapURL());
         request.setAttribute("crawlDelay", staxCrawler.getCrawlDelay());
         request.setAttribute("staxTotalResults", staxCrawler.getNumberFoundProducts());

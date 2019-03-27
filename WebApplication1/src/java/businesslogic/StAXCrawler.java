@@ -136,9 +136,10 @@ public class StAXCrawler {
                         break;
                     case XMLStreamConstants.END_ELEMENT:
                         if (reader.getLocalName().equals("loc") && tagContent.contains(inputProduct)) {
-                            splitLine = tagContent.split("https://www.sephora.com/ca/en/product/");
-                            splitLine = splitLine[1].split("-P");
-                            foundProducts.add(splitLine[0]);
+//                            splitLine = tagContent.split("https://www.sephora.com/ca/en/product/");
+//                            splitLine = splitLine[1].split("-P");
+                            foundProducts.add(tagContent);
+//                            foundProducts.add(splitLine[0]);
                         }
                         break;
                 }
@@ -171,8 +172,12 @@ public class StAXCrawler {
     }
     
     public String getFoundProducts() {
-        return foundProducts.toString();
+        return foundProducts.get(0);
     }
+    
+//    public String getFoundProducts() {
+//        return foundProducts.toString();
+//    }
 
     public String getDisallowedPages() {
         return disallowedPages.toString();

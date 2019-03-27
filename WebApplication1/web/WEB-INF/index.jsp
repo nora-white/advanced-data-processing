@@ -95,6 +95,10 @@
                             </div>
 
                         </div>
+                                
+                        <div class="container margin-top">
+                            ${scraperResults}
+                        </div>
 
                         <!-- Result data -->
                         <div class="container margin-top">
