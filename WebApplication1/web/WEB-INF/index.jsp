@@ -97,7 +97,7 @@
                         </div>
                                 
                         <div class="container margin-top">
-                            ${scraperResults}
+                            Scraper results: ${scraperResults}
                         </div>
 
                         <!-- Result data -->
