@@ -112,6 +112,7 @@ public class DOMCrawler {
     }
     
     public void findProduct() {
+        
         // Start timer
         searchStartTime = System.currentTimeMillis();
         
@@ -173,8 +174,8 @@ public class DOMCrawler {
         return foundProducts.size();
     }
     
-    public String getFoundProducts() {
-        return foundProducts.toString();
+    public ArrayList<String> getFoundProducts() {
+        return foundProducts;
     }
 
     public String getDisallowedPages() {

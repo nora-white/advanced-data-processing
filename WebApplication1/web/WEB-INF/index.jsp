@@ -2,6 +2,7 @@
 <%@page session="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="cpsc4310" %>
 
 <!DOCTYPE html>
@@ -60,7 +61,7 @@
 
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <h2>Crawler results</h2>
+                                    <h2>Statistics and Gathered Info</h2>
                                 </div>
                             </div>
 
@@ -81,31 +82,116 @@
 
                             <div class="row">
                                 <div class="col-sm-2 title">
-                                    DOM results
+                                    DOM crawler results
                                 </div>
                                 <div class="col-sm-4">
-                                    ${domTime} with ${domTotalResults} product(s) found
+                                    ${domTime} with ${domTotalResults} product URL(s) found
                                 </div>
                                 <div class="col-sm-2 title">
-                                    StAX results
+                                    StAX crawler results
                                 </div>
                                 <div class="col-sm-4">
-                                    ${staxTime} with ${staxTotalResults} product(s) found
+                                    ${staxTime} with ${staxTotalResults} product URL(s) found
+                                </div>
+                            </div>
+                                
+                            <div class="row">
+                                <div class="col-sm-2 title">
+                                    DOM scraper results
+                                </div>
+                                <div class="col-sm-4">
+                                    ${domScraperDuration} with ${fn:length(scrapedProducts)} matching product(s) found
+                                </div>
+                                <div class="col-sm-2 title">
+                                    StAX scraper results
+                                </div>
+                                <div class="col-sm-4">
+                                    N/A
                                 </div>
                             </div>
 
                         </div>
-                                
-                        <div class="container margin-top">
-                            Scraper results: ${scraperResults}
-                        </div>
+                        
+                        <c:choose>
+                            <c:when test="${empty scrapedProducts}">
+                                <div class="container margin-top">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h2>Scraped product(s)</h2>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-sm-12 no-products">
+                                            No products were found that matched your query.
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <!-- Scraped data -->
+                                <div class="container margin-top">
 
-                        <!-- Result data -->
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h2>Scraped product(s)</h2>
+                                        </div>
+                                    </div>
+
+                                    <c:forEach items="${scrapedProducts}" var="product">
+
+                                        <div class="row margin-top product-row">
+
+                                            <!-- Image column -->
+                                            <div class="col-sm-2">
+        <!--                                       <img src="${product.imgurl}" class="img-fluid" />-->
+                                            </div>
+
+                                            <!-- Product data column -->
+                                            <div class="col-sm-10">
+
+                                                <div class="row">
+                                                    <div class="col-sm-12 product-brand">
+                                                        ${product.brand}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12 product-name">
+                                                        ${product.name}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        ${product.price}
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        ${product.size}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <a href="${product.producturl}">${product.producturl}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </c:forEach>
+
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <!-- JSON data -->
                         <div class="container margin-top">
 
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <h2>Found product(s)</h2>
+                                    <h2>JSON product(s)</h2>
                                 </div>
                             </div>
 

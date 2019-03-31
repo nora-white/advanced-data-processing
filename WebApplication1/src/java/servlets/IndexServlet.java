@@ -14,10 +14,10 @@ import java.util.ArrayList;
 //import businesslogic.DOMCrawler;
 import businesslogic.DOMScraper;
 import businesslogic.StAXScraper;
+import java.util.concurrent.TimeUnit;
 
 @WebServlet(name = "IndexServlet", urlPatterns = {"/IndexServlet"})
 public class IndexServlet extends HttpServlet {
-
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -30,31 +30,50 @@ public class IndexServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        // Initialize input parameters
         String inputBrand = request.getParameter("inputBrand");
         String inputProduct = request.getParameter("inputProduct");
+        request.setAttribute("inputBrand", inputBrand);
+        request.setAttribute("inputProduct", inputProduct);
+        ArrayList<Product> scrapedProducts = new ArrayList<>();
         
+        // Read in saved products from JSON
         JSONBuilder jsonBuilder = new JSONBuilder();
         jsonBuilder.getJsonFromFile();
         ArrayList<Product> jsonProducts = jsonBuilder.getJsonProductList();
+        request.setAttribute("products", jsonProducts);
             
+        // Run StAX crawler
         StAXCrawler staxCrawler = new StAXCrawler(inputBrand, inputProduct);
         staxCrawler.search();
+        ArrayList<String> foundProductURLs = staxCrawler.getFoundProducts();
+        request.setAttribute("staxTotalResults", staxCrawler.getNumberFoundProducts());
+        request.setAttribute("staxTime", staxCrawler.getDuration());
+        
+        // Find product info and time how long it takes
+        long scraperStartTime = System.currentTimeMillis();
+        for (int i = 0; i < foundProductURLs.size(); i++) {
+            DOMScraper domScraper = new DOMScraper(foundProductURLs.get(i), inputBrand, staxCrawler.getCrawlDelay());
+            if (domScraper.getProduct() != null)
+                scrapedProducts.add(domScraper.getProduct());
+        }
+        long scraperEndTime = System.currentTimeMillis();
+        request.setAttribute("domScraperDuration", Long.toString(TimeUnit.MILLISECONDS.toSeconds(scraperEndTime - scraperStartTime)) + " seconds");
+
+        // Set products
+        request.setAttribute("scrapedProducts", scrapedProducts);
         
 //        StAXScraper staxScraper = new StAXScraper(staxCrawler.getFoundProducts(), staxCrawler.getCrawlDelay());
-        DOMScraper domScraper = new DOMScraper(staxCrawler.getFoundProducts(), staxCrawler.getCrawlDelay());
 //        DOMCrawler domCrawler = new DOMCrawler(inputBrand, inputProduct);
 //        domCrawler.search();
         
         request.setAttribute("searchCompleted", true);
-        request.setAttribute("inputBrand", inputBrand);
-        request.setAttribute("inputProduct", inputProduct);
-        request.setAttribute("products", jsonProducts);
+        
 
-        request.setAttribute("scraperResults", domScraper.getResults());
+//        request.setAttribute("scraperResults", domScraper.getResults());
         request.setAttribute("sitemapURL", staxCrawler.getSitemapURL());
         request.setAttribute("crawlDelay", staxCrawler.getCrawlDelay());
-        request.setAttribute("staxTotalResults", staxCrawler.getNumberFoundProducts());
-        request.setAttribute("staxTime", staxCrawler.getDuration());
+
 //        request.setAttribute("domTime", "<b>DOM search duration: </b>" + domCrawler.getDuration() + " seconds");
         
 //        request.setAttribute("domFoundProducts", "<b>DOM found products: (" + domCrawler.getNumberFoundProducts() + "): </b>" + domCrawler.getFoundProducts());

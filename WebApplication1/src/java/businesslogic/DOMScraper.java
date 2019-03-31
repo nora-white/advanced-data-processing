@@ -26,13 +26,13 @@ import org.xml.sax.SAXException;
 
 public class DOMScraper {
     
-    private final String productURL;
-    private int crawlDelay = 0;
-    private String results = "";
+    private final String productURL, inputBrand;
+    private final int crawlDelay;
     private Product product = new Product();
       
-    public DOMScraper(String productURL, int crawlDelay) {
-        this.productURL = productURL;    
+    public DOMScraper(String productURL, String inputBrand, int crawlDelay) {
+        this.productURL = productURL;
+        this.inputBrand = inputBrand.toLowerCase();
         this.crawlDelay = crawlDelay;
         scrapePage();
     }
@@ -71,20 +71,42 @@ public class DOMScraper {
             xPath = XPathFactory.newInstance().newXPath();
             XPathExpression brandExp = xPath.compile("//h1[@data-comp='DisplayName Flex Box']/a/span");
             XPathExpression productNameExp = xPath.compile("//h1[@data-comp='DisplayName Flex Box']/span");
-            XPathExpression sizeExp = xPath.compile("//span[contains(text(),'Standard Size')]");
+            XPathExpression sizeExp = xPath.compile("//span[contains(text(),'Size')] | //span[contains(text(), 'oz')] | //span[contains(text(), 'mL')]");
             XPathExpression priceExp = xPath.compile("//div[@data-comp='Price Box']");
-            XPathExpression imageExp = xPath.compile("//*[name()='image']/@xlink:href");
+//            XPathExpression imageExp = xPath.compile("//*[name()='image']/@xlink:href");
             
             // Grab only relevant divs that contain useful product data
             nodeListProductTop = (NodeList) xPath.compile("//div[@data-comp='RegularProductTop']").evaluate(document, XPathConstants.NODESET);
            
-            product.setPrice(priceExp.evaluate(nodeListProductTop.item(0)));
-            product.setBrand(brandExp.evaluate(nodeListProductTop.item(0)));
-            product.setName(productNameExp.evaluate(nodeListProductTop.item(0)));
-            String[] splitSize = sizeExp.evaluate(nodeListProductTop.item(0)).split("- ");
-            product.setSize(splitSize[1]);
-            results = imageExp.evaluate(nodeListProductTop.item(0));
-            System.out.println("Results: " + results);
+            if ((brandExp.evaluate(nodeListProductTop.item(0)).toLowerCase()).contains(inputBrand)) {
+                product.setBrand(brandExp.evaluate(nodeListProductTop.item(0)));
+                product.setProducturl(productURL);
+                product.setPrice(priceExp.evaluate(nodeListProductTop.item(0)));
+                product.setName(productNameExp.evaluate(nodeListProductTop.item(0)));
+
+                try { // Check for edge cases with differing ways of displaying size
+                    String[] splitSize;
+                    if (sizeExp.evaluate(nodeListProductTop.item(0)).contains("- ")) {
+                        splitSize = sizeExp.evaluate(nodeListProductTop.item(0)).split("- ");
+                        product.setSize(splitSize[1]);
+                    } else if (sizeExp.evaluate(nodeListProductTop.item(0)).contains(": ")) {
+                        splitSize = sizeExp.evaluate(nodeListProductTop.item(0)).split(": ");
+                        product.setSize(splitSize[1]);
+                    } else if (sizeExp.evaluate(nodeListProductTop.item(0)).contains("E ")) {
+                        splitSize = sizeExp.evaluate(nodeListProductTop.item(0)).split("E ");
+                        product.setSize(splitSize[1]);
+                    } else {
+                        product.setSize(sizeExp.evaluate(nodeListProductTop.item(0)));
+                    }
+                } catch (Exception e) {
+                    product.setSize("");
+                }
+            
+                product.setImgurl("");
+            } else {
+                product = null;
+            }
+            
        
         } catch (IOException ex) {
             Logger.getLogger(DOMScraper.class.getName()).log(Level.SEVERE, null, ex);
@@ -105,7 +127,7 @@ public class DOMScraper {
         }
     }
     
-    public String getResults() {
-        return results;
+    public Product getProduct() {
+        return product;
     }
 }

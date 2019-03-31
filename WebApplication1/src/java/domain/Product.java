@@ -69,6 +69,10 @@ public class Product {
         this.price = price;
     }
     
+    public void setProducturl(String producturl) {
+        this.producturl = producturl;
+    }
+    
     @Override
     public String toString() {
         return "[ timestamp: " + timestamp + ", brand: " + brand + ", name: " 

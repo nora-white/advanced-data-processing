@@ -171,13 +171,9 @@ public class StAXCrawler {
         return foundProducts.size();
     }
     
-    public String getFoundProducts() {
-        return foundProducts.get(0);
+    public ArrayList<String> getFoundProducts() {
+        return foundProducts;
     }
-    
-//    public String getFoundProducts() {
-//        return foundProducts.toString();
-//    }
 
     public String getDisallowedPages() {
         return disallowedPages.toString();
