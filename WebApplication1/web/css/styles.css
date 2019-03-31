@@ -66,3 +66,7 @@ h1 {
 .no-products {
     text-align: center;
 }
+
+.form-check {
+    padding-top: 10px;
+}

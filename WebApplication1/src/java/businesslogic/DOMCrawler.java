@@ -41,6 +41,8 @@ public class DOMCrawler {
             searchEndTime,
             searchDuration;
     
+    int disallowedPagesSize;
+    
     private int crawlDelay = 0;
     private ArrayList<String> disallowedPages = new ArrayList<>();
     private ArrayList<String> foundProducts = new ArrayList<>();
@@ -91,6 +93,7 @@ public class DOMCrawler {
                     baseSitemapURL = splitLine[1];
                 }
             }
+            disallowedPagesSize = disallowedPages.size();
         } catch (MalformedURLException mue) {
             mue.printStackTrace();
         } catch (IOException ioe) {
@@ -178,11 +181,21 @@ public class DOMCrawler {
                 nodeList = (NodeList) xPath.compile("//url").evaluate(document, XPathConstants.NODESET);
                 xPathExp = xPath.compile("./loc");
                 
+                String lineContent;
+                
                 for(int j = 0; j < nodeList.getLength(); j++) {
-                    if(xPathExp.evaluate(nodeList.item(j)).contains(inputProduct)) {
-                        splitLine = xPathExp.evaluate(nodeList.item(j)).split("https://www.sephora.com/ca/en/product/");
-                        splitLine = splitLine[1].split("-P");
-                        foundProducts.add(splitLine[0]);
+                    lineContent = xPathExp.evaluate(nodeList.item(j));
+                    if(lineContent.contains(inputProduct)) {
+                        for (int k = 0; k < disallowedPagesSize; k++) {
+                            if (lineContent.contains(disallowedPages.get(k))) {
+                                break;
+                            } else if (disallowedPagesSize-1 == k) {
+                                foundProducts.add(lineContent);
+                            }
+                        }
+//                        splitLine = xPathExp.evaluate(nodeList.item(j)).split("https://www.sephora.com/ca/en/product/");
+//                        splitLine = splitLine[1].split("-P");
+//                        foundProducts.add(splitLine[0]);
                     }
                 }
             }
@@ -216,8 +229,8 @@ public class DOMCrawler {
      * 
      * @return  a string representing the amount of time the crawler ran for
      */
-    public String getDuration() {
-        return Long.toString(TimeUnit.MILLISECONDS.toSeconds(searchDuration));
+    public long getDuration() {
+        return TimeUnit.MILLISECONDS.toSeconds(searchDuration);
     }
     
     /**

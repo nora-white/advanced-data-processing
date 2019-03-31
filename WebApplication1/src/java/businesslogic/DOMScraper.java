@@ -88,7 +88,7 @@ public class DOMScraper {
             org.jsoup.nodes.Document jSoupCleanDoc = new Cleaner(Whitelist.relaxed()
                 .addTags("svg", "image", "h1", "h2", "main", "nav")
                 .addAttributes(":all", "class", "data-comp", "data-sephid")
-                .removeTags("img", "script", "style", "iframe", "br"))
+                .removeTags("img", "br"))
                 .clean(jSoupDirtyDoc);
 
             // Build the document for xPath to work off of

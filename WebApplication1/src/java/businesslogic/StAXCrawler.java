@@ -28,6 +28,8 @@ public class StAXCrawler {
             searchEndTime, 
             searchDuration;
     
+    int disallowedPagesSize;
+    
     private int crawlDelay = 0;
     private ArrayList<String> disallowedPages = new ArrayList<>();
     private ArrayList<String> foundProducts = new ArrayList<>();
@@ -78,6 +80,7 @@ public class StAXCrawler {
                     baseSitemapURL = splitLine[1];
                 }
             }
+            disallowedPagesSize = disallowedPages.size();
         } catch (MalformedURLException ex) {
             Logger.getLogger(StAXCrawler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -168,10 +171,10 @@ public class StAXCrawler {
                         break;
                     case XMLStreamConstants.END_ELEMENT:
                         if (reader.getLocalName().equals("loc") && tagContent.contains(inputProduct)) {
-                            for (int i = 0; i < disallowedPages.size(); i++) {
+                            for (int i = 0; i < disallowedPagesSize; i++) {
                                 if (tagContent.contains(disallowedPages.get(i))) {
                                     break;
-                                } else if (disallowedPages.size()-1 == i) {
+                                } else if (disallowedPagesSize-1 == i) {
                                     foundProducts.add(tagContent);
                                 }
                             }
@@ -208,8 +211,8 @@ public class StAXCrawler {
      * 
      * @return  a string representing the amount of time the crawler ran for
      */
-    public String getDuration() {
-        return Long.toString(TimeUnit.MILLISECONDS.toSeconds(searchDuration)) + " seconds";
+    public long getDuration() {
+        return TimeUnit.MILLISECONDS.toSeconds(searchDuration);
     }
     
     /**

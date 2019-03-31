@@ -50,10 +50,14 @@
                     </div>
                     <div class="form-group row">
                         <label for="inputURL" class="col-sm-2 col-form-label">Website</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-4">
                             <select name="inputURL" id="inputURL" class="form-control">
                                 <option value="https://www.sephora.com/ca/en/">Sephora</option>
                             </select>
+                        </div>
+                        <label for="runDOMCrawler" class="col-sm-2 col-form-label">Run DOM Crawler?</label>
+                        <div class="form-check">
+                            <input name="runDOMCrawler" type="checkbox" class="form-check-input" id="runDOMCrawler" value="yes">
                         </div>
                     </div>
                     <div class="form-group row center-button">
@@ -93,13 +97,22 @@
                                     DOM crawler results
                                 </div>
                                 <div class="col-sm-4">
-                                    ${domTime} with ${domTotalResults} product URL(s) found
+                                    <c:choose>
+                                        <c:when test="${DOMCrawlerNotRun}">
+                                            DOM Crawler not run
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${domTime} seconds with ${domTotalResults} product URL(s) found<br/>
+                                            Average time is ${domAverageTime} seconds per URL found
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                                 <div class="col-sm-2 title">
                                     StAX crawler results
                                 </div>
                                 <div class="col-sm-4">
-                                    ${staxTime} with ${staxTotalResults} product URL(s) found
+                                    ${staxTime} seconds with ${staxTotalResults} product URL(s) found<br/>
+                                    Average time is ${staxAverageTime} seconds per URL found
                                 </div>
                             </div>
                                 
@@ -108,7 +121,8 @@
                                     DOM scraper results
                                 </div>
                                 <div class="col-sm-4">
-                                    ${domScraperDuration} with ${fn:length(scrapedProducts)} matching product(s) found
+                                    ${domScraperDuration} seconds with ${fn:length(scrapedProducts)} matching product(s) found<br/>
+                                    Average time is ${domScraperAverageTime} seconds per correct product found
                                 </div>
                                 <div class="col-sm-2 title">
                                     StAX scraper results
