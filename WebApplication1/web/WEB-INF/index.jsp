@@ -138,7 +138,7 @@
                                                 $<fmt:formatNumber type="number" maxFractionDigits="2" value="${product.price}"/> CAD
                                             </div>
                                             <div class="col-sm-2">
-                                                ${product.sizeoz} / ${product.sizeg}
+                                                ${product.size}
                                             </div>
                                         </div>
 

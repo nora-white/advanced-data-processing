@@ -39,9 +39,8 @@ public class JSONBuilder {
                 LocalDateTime.parse(jsonObject.get("timestamp").getAsString(), formatter), 
                 jsonObject.get("brand").getAsString(), 
                 jsonObject.get("name").getAsString(),
-                jsonObject.get("sizeoz").getAsString(),
-                jsonObject.get("sizeg").getAsString(),
-                jsonObject.get("price").getAsFloat(),
+                jsonObject.get("size").getAsString(),
+                jsonObject.get("price").getAsString(),
                 jsonObject.get("imgurl").getAsString(),
                 jsonObject.get("producturl").getAsString()
             );

@@ -5,24 +5,20 @@ import java.time.LocalDateTime;
 public class Product {
     
     // Attributes
-    private String brand,name, sizeoz, sizeg, imgurl, producturl;
-//    private String[] colour;
-    private float price;
+    private String brand, name, size, imgurl, producturl, price;
     private LocalDateTime timestamp;
 
     // Default constructor
-    public Product() {}
-    
-    public Product(LocalDateTime timestamp, String brand, String name, String sizeoz, String sizeg, float price, String imgurl, String producturl) {
+    public Product() { }
+            
+    public Product(LocalDateTime timestamp, String brand, String name, String size, String price, String imgurl, String producturl) {
         this.timestamp = timestamp;
         this.brand = brand;
         this.name = name;
-        this.sizeoz = sizeoz;
-        this.sizeg = sizeg;
+        this.size = size;
         this.imgurl = imgurl;
         this.producturl = producturl;
         this.price = price;
-//        this.colour = colour;
     }
     
     public LocalDateTime getTimestamp() {
@@ -37,12 +33,8 @@ public class Product {
         return name;
     }
 
-    public String getSizeoz() {
-        return sizeoz;
-    }
-
-    public String getSizeg() {
-        return sizeg;
+    public String getSize() {
+        return size;
     }
 
     public String getImgurl() {
@@ -53,18 +45,34 @@ public class Product {
         return producturl;
     }
 
-//    public String[] getColour() {
-//        return colour;
-//    }
-
-    public float getPrice() {
+    public String getPrice() {
         return price;
     }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public void setImgurl(String imgurl) {
+        this.imgurl = imgurl;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
     
+    @Override
     public String toString() {
         return "[ timestamp: " + timestamp + ", brand: " + brand + ", name: " 
-                + name + ", sizeoz: " + sizeoz + ", sizeg: " + sizeg 
-                + ", imgurl: " + imgurl + ", price: " + price + ", producturl: "
-                + producturl + "]";
+                + name + ", size: " + size + ", imgurl: " + imgurl
+                + ", price: " + price + ", producturl: " + producturl + "]";
     }
 }
