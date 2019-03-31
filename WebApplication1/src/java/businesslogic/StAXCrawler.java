@@ -168,7 +168,13 @@ public class StAXCrawler {
                         break;
                     case XMLStreamConstants.END_ELEMENT:
                         if (reader.getLocalName().equals("loc") && tagContent.contains(inputProduct)) {
-                            foundProducts.add(tagContent);
+                            for (int i = 0; i < disallowedPages.size(); i++) {
+                                if (tagContent.contains(disallowedPages.get(i))) {
+                                    break;
+                                } else if (disallowedPages.size()-1 == i) {
+                                    foundProducts.add(tagContent);
+                                }
+                            }
                         }
                         break;
                 }
