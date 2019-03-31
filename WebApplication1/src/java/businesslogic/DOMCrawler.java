@@ -29,6 +29,7 @@ public class DOMCrawler {
     
     private final String inputBrand;
     private final String inputProduct;
+    private final String inputURL;
     private int crawlDelay = 0;
     private ArrayList<String> disallowedPages = new ArrayList<>();
     private ArrayList<String> foundProducts = new ArrayList<>();
@@ -37,9 +38,10 @@ public class DOMCrawler {
     long searchEndTime;
     long searchDuration;
     
-    public DOMCrawler(String inputBrand, String inputProduct) {
+    public DOMCrawler(String inputBrand, String inputProduct, String inputURL) {
         this.inputBrand = inputBrand;
         this.inputProduct = inputProduct;
+        this.inputURL = inputURL;
         initializeCrawler();
     }
     
@@ -51,7 +53,7 @@ public class DOMCrawler {
         String[] splitLine;
     
         try {
-            url = new URL("https://www.sephora.com/robots.txt");
+            url = new URL(inputURL + "robots.txt");
             is = url.openStream();
             br = new BufferedReader(new InputStreamReader(is));
             

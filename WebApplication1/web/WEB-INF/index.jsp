@@ -48,6 +48,14 @@
                             <input name="inputProduct" type="text" class="form-control" id="inputProduct" placeholder="Product name" value="${inputProduct}" />
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="inputURL" class="col-sm-2 col-form-label">Website</label>
+                        <div class="col-sm-10">
+                            <select name="inputURL" id="inputURL" class="form-control">
+                                <option value="https://www.sephora.com/ca/en/">Sephora</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group row center-button">
                         <input class="btn btn-primary" type="submit" value="Search">
                     </div>

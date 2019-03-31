@@ -33,8 +33,10 @@ public class IndexServlet extends HttpServlet {
         // Initialize input parameters
         String inputBrand = request.getParameter("inputBrand");
         String inputProduct = request.getParameter("inputProduct");
+        String inputURL = request.getParameter("inputURL");
         request.setAttribute("inputBrand", inputBrand);
         request.setAttribute("inputProduct", inputProduct);
+        request.setAttribute("inputURL", inputURL);
         ArrayList<Product> scrapedProducts = new ArrayList<>();
         
         // Read in saved products from JSON
@@ -44,7 +46,7 @@ public class IndexServlet extends HttpServlet {
         request.setAttribute("products", jsonProducts);
             
         // Run StAX crawler
-        StAXCrawler staxCrawler = new StAXCrawler(inputBrand, inputProduct);
+        StAXCrawler staxCrawler = new StAXCrawler(inputBrand, inputProduct, inputURL);
         staxCrawler.search();
         ArrayList<String> foundProductURLs = staxCrawler.getFoundProducts();
         request.setAttribute("staxTotalResults", staxCrawler.getNumberFoundProducts());
@@ -71,7 +73,7 @@ public class IndexServlet extends HttpServlet {
         
 
 //        request.setAttribute("scraperResults", domScraper.getResults());
-        request.setAttribute("sitemapURL", staxCrawler.getSitemapURL());
+        request.setAttribute("sitemapURL", staxCrawler.getBaseSitemapURL());
         request.setAttribute("crawlDelay", staxCrawler.getCrawlDelay());
 
 //        request.setAttribute("domTime", "<b>DOM search duration: </b>" + domCrawler.getDuration() + " seconds");

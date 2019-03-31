@@ -20,23 +20,40 @@ public class StAXCrawler {
     private String baseSitemapURL = "";
     ArrayList<String> sitemapURLs = new ArrayList<>();
     
-    private final String inputBrand;
-    private final String inputProduct;
+    private final String inputBrand, 
+            inputProduct,
+            inputURL;
+    
+    long searchStartTime, 
+            searchEndTime, 
+            searchDuration;
+    
     private int crawlDelay = 0;
     private ArrayList<String> disallowedPages = new ArrayList<>();
     private ArrayList<String> foundProducts = new ArrayList<>();
     
-    long searchStartTime;
-    long searchEndTime;
-    long searchDuration;
-    
-    
-    public StAXCrawler(String inputBrand, String inputProduct) {
+    /**
+     * Constructor for the StAXCrawler class. Accepts 3 parameters, the brand,
+     * product name, and the url to search for products on. Once the parameters
+     * have been saved, it initializes itself by accessing the robots.txt file.
+     * 
+     * @param inputBrand    the brand input by the user to search for
+     * @param inputProduct  the product name input by the user to search for
+     * @param inputURL      the url input by the user to search for products on
+     */
+    public StAXCrawler(String inputBrand, String inputProduct, String inputURL) {
         this.inputBrand = inputBrand;
         this.inputProduct = inputProduct;
+        this.inputURL = inputURL;
         initializeCrawler();
     }
     
+    /**
+     * This function navigates to the robots.txt file of the input site. It
+     * opens a buffered reader to read the input stream of the txt file. Line by 
+     * line, it identifies the disallowed pages, the crawl delay, and the starting
+     * sitemap.
+     */
     private void initializeCrawler() {
         URL url;
         InputStream is;
@@ -68,6 +85,9 @@ public class StAXCrawler {
         } 
     }
     
+    /**
+     * 
+     */
     public void search() {
         // Start timer
         searchStartTime = System.currentTimeMillis();
@@ -109,6 +129,9 @@ public class StAXCrawler {
         findProduct();
     }
     
+    /**
+     * findProduct 
+     */
     public void findProduct() {
         // Start timer
         searchStartTime = System.currentTimeMillis();
@@ -136,10 +159,7 @@ public class StAXCrawler {
                         break;
                     case XMLStreamConstants.END_ELEMENT:
                         if (reader.getLocalName().equals("loc") && tagContent.contains(inputProduct)) {
-//                            splitLine = tagContent.split("https://www.sephora.com/ca/en/product/");
-//                            splitLine = splitLine[1].split("-P");
                             foundProducts.add(tagContent);
-//                            foundProducts.add(splitLine[0]);
                         }
                         break;
                 }
@@ -155,6 +175,10 @@ public class StAXCrawler {
         searchDuration += searchEndTime - searchStartTime;
     }
     
+    /**
+     * Waits the amount of time specified in the robots.txt file to avoid 
+     * having IP blocked by site owner.
+     */
     private void waitCrawlDelay() {
         try {
             TimeUnit.SECONDS.sleep(crawlDelay);
@@ -163,34 +187,82 @@ public class StAXCrawler {
         }
     }
     
+    /**
+     * Calculates the duration of time the crawler ran for and 
+     * appends "seconds" to it.
+     * 
+     * @return  a string representing the amount of time the crawler ran for
+     */
     public String getDuration() {
         return Long.toString(TimeUnit.MILLISECONDS.toSeconds(searchDuration)) + " seconds";
     }
     
+    /**
+     * Returns the integer value of how many product urls were found that match
+     * the inputProduct.
+     * 
+     * @return  an integer representing the number of urls found that match 
+     *          the inputProduct.
+     */
     public int getNumberFoundProducts() {
         return foundProducts.size();
     }
     
+    /**
+     * Returns the ArrayList of all product urls that were found that 
+     * match the inputProduct.
+     * 
+     * @return  an ArrayList of the String value of each product url that 
+     *          a scraper would need to visit.
+     */
     public ArrayList<String> getFoundProducts() {
         return foundProducts;
     }
 
-    public String getDisallowedPages() {
+    /**
+     * Returns the disallowed pages as a string value.
+     * 
+     * @return  a String representation of the disallowedPages ArrayList
+     */
+    public String getDisallowedPagesAsString() {
         return disallowedPages.toString();
     }
     
-    public String getSitemapURL() {
+    /**
+     * Returns the initial sitemap that robots.txt contains
+     * 
+     * @return  baseSitemapURL  the sitemap given by robots.txt
+     */
+    public String getBaseSitemapURL() {
         return baseSitemapURL;
     }
     
+    /**
+     * Returns the crawl delay specified in the robots.txt
+     * 
+     * @return  crawlDelay  the amount of delay specified in the robots.txt file
+     *                      that the crawler/scraper is required to wait between
+     *                      each request
+     */
     public int getCrawlDelay() {
         return crawlDelay;
     }
     
+    /**
+     * Returns the brand input by the user.
+     * 
+     * @return  inputBrand  the brand value given by the user in the input form.
+     */
     public String getInputBrand() {
         return inputBrand;
     }
     
+    /**
+     * Returns the product name input by the user.
+     * 
+     * @return  inputProduct    the product name value given by the user in the 
+     *                          input form.
+     */
     public String getInputProduct() {
         return inputProduct;
     }
