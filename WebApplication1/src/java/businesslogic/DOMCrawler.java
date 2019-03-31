@@ -22,22 +22,38 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * DOMCrawler looks for URLs to navigate to to further the search for product
+ * data. Handles the processing of any sitemaps and the robots.txt file.
+ * 
+ * @author Nora White
+ */
 public class DOMCrawler {
     
     private String baseSitemapURL = "";
     ArrayList<String> sitemapURLs = new ArrayList<>();
     
-    private final String inputBrand;
-    private final String inputProduct;
-    private final String inputURL;
+    private final String inputBrand,
+            inputProduct,
+            inputURL;
+    
+    long searchStartTime,
+            searchEndTime,
+            searchDuration;
+    
     private int crawlDelay = 0;
     private ArrayList<String> disallowedPages = new ArrayList<>();
     private ArrayList<String> foundProducts = new ArrayList<>();
     
-    long searchStartTime;
-    long searchEndTime;
-    long searchDuration;
-    
+    /**
+     * Constructor for the DOMCrawler class. Accepts 3 parameters, the brand,
+     * product name, and the url to search for products on. Once the parameters
+     * have been saved, it initializes itself by accessing the robots.txt file.
+     * 
+     * @param inputBrand    the brand input by the user to search for
+     * @param inputProduct  the product name input by the user to search for
+     * @param inputURL      the url input by the user to search for products on
+     */
     public DOMCrawler(String inputBrand, String inputProduct, String inputURL) {
         this.inputBrand = inputBrand;
         this.inputProduct = inputProduct;
@@ -45,6 +61,12 @@ public class DOMCrawler {
         initializeCrawler();
     }
     
+    /**
+     * This function navigates to the robots.txt file of the input site. It
+     * opens a buffered reader to read the input stream of the txt file. Line by 
+     * line, it identifies the disallowed pages, the crawl delay, and the starting
+     * sitemap.
+     */
     private void initializeCrawler() {
         URL url;
         InputStream is = null;
@@ -82,6 +104,14 @@ public class DOMCrawler {
         }
     }
     
+    /**
+     * Opens an input stream for the sitemap given by robots.txt. Using 
+     * DocumentBuilderFactory and XPath, the crawler sets the NodeList to the
+     * 'sitemap' tag, and then extracts all 'loc's (url locations) of other
+     * sitemaps.The reader is able to find the correct sitemap that contains 
+     * product info. Values have been hardcoded specifically for Sephora's URL 
+     * style.
+     */
     public void search() {
         // Start timer
         searchStartTime = System.currentTimeMillis();
@@ -113,6 +143,14 @@ public class DOMCrawler {
         findProduct();
     }
     
+    /**
+     * Using the same method as the search() function, DOM processes the given
+     * sitemap that contains the URLs of all products. It looks for the URL for 
+     * any products that match the search query. Based on the structure of the 
+     * URL, the URL cannot be ignored based on the input brand. The brand will 
+     * need to be checked on the HTML page to determine if the product 
+     * completely matches the search query.
+     */
     public void findProduct() {
         
         // Start timer
@@ -160,6 +198,10 @@ public class DOMCrawler {
         searchDuration += searchEndTime - searchStartTime;
     }
     
+    /**
+     * Waits the amount of time specified in the robots.txt file to avoid 
+     * having IP blocked by site owner.
+     */
     private void waitCrawlDelay() {
         try {
             TimeUnit.SECONDS.sleep(crawlDelay);
@@ -168,36 +210,83 @@ public class DOMCrawler {
         }
     }
     
+    /**
+     * Calculates the duration of time the crawler ran for and 
+     * appends "seconds" to it.
+     * 
+     * @return  a string representing the amount of time the crawler ran for
+     */
     public String getDuration() {
         return Long.toString(TimeUnit.MILLISECONDS.toSeconds(searchDuration));
     }
     
+    /**
+     * Returns the integer value of how many product urls were found that match
+     * the inputProduct.
+     * 
+     * @return  an integer representing the number of urls found that match 
+     *          the inputProduct.
+     */
     public int getNumberFoundProducts() {
         return foundProducts.size();
     }
     
+    /**
+     * Returns the ArrayList of all product urls that were found that 
+     * match the inputProduct.
+     * 
+     * @return  an ArrayList of the String value of each product url that 
+     *          a scraper would need to visit.
+     */
     public ArrayList<String> getFoundProducts() {
         return foundProducts;
     }
 
+    /**
+     * Returns the disallowed pages as a string value.
+     * 
+     * @return  a String representation of the disallowedPages ArrayList
+     */
     public String getDisallowedPages() {
         return disallowedPages.toString();
     }
     
+    /**
+     * Returns the initial sitemap that robots.txt contains
+     * 
+     * @return  baseSitemapURL  the sitemap given by robots.txt
+     */
     public String getSitemapURL() {
         return baseSitemapURL;
     }
     
+    /**
+     * Returns the crawl delay specified in the robots.txt
+     * 
+     * @return  crawlDelay  the amount of delay specified in the robots.txt file
+     *                      that the crawler/scraper is required to wait between
+     *                      each request
+     */
     public int getCrawlDelay() {
         return crawlDelay;
     }
     
+    /**
+     * Returns the brand input by the user.
+     * 
+     * @return  inputBrand  the brand value given by the user in the input form.
+     */
     public String getInputBrand() {
         return inputBrand;
     }
     
+    /**
+     * Returns the product name input by the user.
+     * 
+     * @return  inputProduct    the product name value given by the user in the 
+     *                          input form.
+     */
     public String getInputProduct() {
         return inputProduct;
     }
-
 }

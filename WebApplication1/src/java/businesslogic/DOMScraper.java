@@ -24,19 +24,48 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ * DOMScraper scrapes the found HTML page to find useful product information.
+ * 
+ * @author Nora White
+ */
 public class DOMScraper {
     
-    private final String productURL, inputBrand;
+    private final String productURL, 
+            inputBrand;
     private final int crawlDelay;
     private Product product = new Product();
       
+    /**
+     * Constructor for the DOMScraper class. Accepts 3 parameters, the product's 
+     * URL, the input brand, and the crawl-delay. Once the parameters have been
+     * saved, it begins scraping the page.
+     * @param productURL    the URL of the page so that Selenium Webserver can
+     *                      navigate to it.
+     * @param inputBrand    the brand of the product so that when the brand tag
+     *                      is found, a comparison can be done to check if the
+     *                      brand matches the search query.
+     * @param crawlDelay    the delay that the scraper must abide by every time
+     *                      it makes a page request.
+     */
     public DOMScraper(String productURL, String inputBrand, int crawlDelay) {
         this.productURL = productURL;
-        this.inputBrand = inputBrand.toLowerCase();
+        this.inputBrand = inputBrand;
         this.crawlDelay = crawlDelay;
         scrapePage();
     }
     
+    /**
+     * This method scrapes the page using the DOM method, with XPath expressions.
+     * Similar to the DOMCrawler search() and findProduct() methods. Selenium
+     * WebDriver uses ChromeDriver to open a browser and navigate to the productURL.
+     * Once navigated, Selenium waits for any scripts to finish processing, and then
+     * sends the HTML to JSoup to clean up. Without JSoup to clean up the page,
+     * the HTML document is ill-formed and cannot be processed as a Document.
+     * XPathExpressions are used to find the correct tag that contains the 
+     * useful product data. If the brand found does not match the query brand,
+     * processing stops and the product created is NULL.
+     */
     private void scrapePage()  {        
         DocumentBuilderFactory documentBuilderFactory;
         DocumentBuilder documentBuilder;
@@ -119,6 +148,10 @@ public class DOMScraper {
         }
     }
         
+    /**
+     * Waits the amount of time specified in the robots.txt file to avoid 
+     * having IP blocked by site owner.
+     */
     private void waitCrawlDelay() {
         try {
             TimeUnit.SECONDS.sleep(crawlDelay);
@@ -127,6 +160,12 @@ public class DOMScraper {
         }
     }
     
+    /**
+     * Returns the created product.
+     * 
+     * @return  Product the Product that has been created from the scraped web page.
+     *                  The Product may be null if it didn't match the search query.
+     */
     public Product getProduct() {
         return product;
     }

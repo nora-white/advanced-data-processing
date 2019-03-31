@@ -46,7 +46,7 @@ public class IndexServlet extends HttpServlet {
         request.setAttribute("products", jsonProducts);
             
         // Run StAX crawler
-        StAXCrawler staxCrawler = new StAXCrawler(inputBrand, inputProduct, inputURL);
+        StAXCrawler staxCrawler = new StAXCrawler(inputBrand.toLowerCase(), inputProduct.toLowerCase(), inputURL);
         staxCrawler.search();
         ArrayList<String> foundProductURLs = staxCrawler.getFoundProducts();
         request.setAttribute("staxTotalResults", staxCrawler.getNumberFoundProducts());
@@ -55,7 +55,7 @@ public class IndexServlet extends HttpServlet {
         // Find product info and time how long it takes
         long scraperStartTime = System.currentTimeMillis();
         for (int i = 0; i < foundProductURLs.size(); i++) {
-            DOMScraper domScraper = new DOMScraper(foundProductURLs.get(i), inputBrand, staxCrawler.getCrawlDelay());
+            DOMScraper domScraper = new DOMScraper(foundProductURLs.get(i), inputBrand.toLowerCase(), staxCrawler.getCrawlDelay());
             if (domScraper.getProduct() != null)
                 scrapedProducts.add(domScraper.getProduct());
         }

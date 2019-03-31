@@ -49,7 +49,7 @@ public class StAXCrawler {
     }
     
     /**
-     * This function navigates to the robots.txt file of the input site. It
+     * This method navigates to the robots.txt file of the input site. It
      * opens a buffered reader to read the input stream of the txt file. Line by 
      * line, it identifies the disallowed pages, the crawl delay, and the starting
      * sitemap.
@@ -62,7 +62,7 @@ public class StAXCrawler {
         String[] splitLine;
     
         try {
-            url = new URL("https://www.sephora.com/robots.txt");
+            url = new URL(inputURL + "robots.txt");
             is = url.openStream();
             br = new BufferedReader(new InputStreamReader(is));
             
@@ -86,7 +86,11 @@ public class StAXCrawler {
     }
     
     /**
-     * 
+     * Opens an input stream for the sitemap given by robots.txt. Using 
+     * XMLInputFactory, StAX parses each line of the HTML file individually.
+     * Checking the opening tag, data inside of the tag, and the end tag, the
+     * reader is able to find the correct sitemap that contains product info.
+     * Values have been hardcoded specifically for Sephora's URL style.
      */
     public void search() {
         // Start timer
@@ -130,7 +134,12 @@ public class StAXCrawler {
     }
     
     /**
-     * findProduct 
+     * Using the same method as the search() method, StAX processes the given
+     * sitemap that contains the URLs of all products. It looks for the URL for 
+     * any products that match the search query. Based on the structure of the 
+     * URL, the URL cannot be ignored based on the input brand. The brand will 
+     * need to be checked on the HTML page to determine if the product 
+     * completely matches the search query.
      */
     public void findProduct() {
         // Start timer

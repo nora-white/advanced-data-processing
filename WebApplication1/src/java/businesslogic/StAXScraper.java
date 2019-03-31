@@ -1,6 +1,5 @@
 package businesslogic;
 
-//import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -13,6 +12,11 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+/**
+ * The unfinished class of the StAXScraper. Not implemented due to time 
+ * constraints and unexpected blocks.
+ * @author Nora White
+ */
 public class StAXScraper {
     
     private final String productURL;
