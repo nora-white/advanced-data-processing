@@ -103,7 +103,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             ${domTime} seconds with ${domTotalResults} product URL(s) found<br/>
-                                            Average time is ${domAverageTime} seconds per URL found
+                                            Average time is ${domAverageTime} second(s) per URL found
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
@@ -112,7 +112,7 @@
                                 </div>
                                 <div class="col-sm-4">
                                     ${staxTime} seconds with ${staxTotalResults} product URL(s) found<br/>
-                                    Average time is ${staxAverageTime} seconds per URL found
+                                    Average time is ${staxAverageTime} second(s) per URL found
                                 </div>
                             </div>
                                 
@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="col-sm-4">
                                     ${domScraperDuration} seconds with ${fn:length(scrapedProducts)} matching product(s) found<br/>
-                                    Average time is ${domScraperAverageTime} seconds per correct product found
+                                    Average time is ${domScraperAverageTime} second(s) per product scraped
                                 </div>
                                 <div class="col-sm-2 title">
                                     StAX scraper results

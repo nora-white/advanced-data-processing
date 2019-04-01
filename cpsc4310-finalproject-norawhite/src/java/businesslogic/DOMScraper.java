@@ -85,6 +85,7 @@ public class DOMScraper {
             // Clean HTML page with JSoup
             org.jsoup.nodes.Document jSoupDirtyDoc = Jsoup.parse(driver.getPageSource());
             driver.quit();
+            
             org.jsoup.nodes.Document jSoupCleanDoc = new Cleaner(Whitelist.relaxed()
                 .addTags("svg", "image", "h1", "h2", "main", "nav")
                 .addAttributes(":all", "class", "data-comp", "data-sephid")
@@ -102,7 +103,6 @@ public class DOMScraper {
             XPathExpression productNameExp = xPath.compile("//h1[@data-comp='DisplayName Flex Box']/span");
             XPathExpression sizeExp = xPath.compile("//span[contains(text(),'Size')] | //span[contains(text(), 'oz')] | //span[contains(text(), 'mL')]");
             XPathExpression priceExp = xPath.compile("//div[@data-comp='Price Box']");
-//            XPathExpression imageExp = xPath.compile("//*[name()='image']/@xlink:href");
             
             // Grab only relevant divs that contain useful product data
             nodeListProductTop = (NodeList) xPath.compile("//div[@data-comp='RegularProductTop']").evaluate(document, XPathConstants.NODESET);
@@ -135,8 +135,6 @@ public class DOMScraper {
             } else {
                 product = null;
             }
-            
-       
         } catch (IOException ex) {
             Logger.getLogger(DOMScraper.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
